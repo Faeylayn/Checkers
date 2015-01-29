@@ -42,17 +42,19 @@ class Piece
   end
 
   def enemy_occupied?(position)
+    return false if !position.all? {|coord| coord.between?(0,7)}
     return false if @board.rows[position[0]][position[1]] == nil
-    @board.rows[position[0]][position[1]].color != false
+    @board.rows[position[0]][position[1]].color != @color
   end
 
 
   def generate_valid_moves
     move_set = {}
-#    debugger
+
     SLIDES.each_with_index do |(dx, dy), idx|
       dx = -dx if @color == :black
       test_pos = [@pos[0] + dx, @pos[1] + dy]
+
       if !enemy_occupied?(test_pos)
         move_set[test_pos] = :slide if valid_pos?(test_pos)
       else
@@ -89,7 +91,7 @@ class Piece
 
   def perform_slide(new_pos)
     moves = generate_valid_moves
-    return false if !moves.keys.include?(new_pos)
+    return false if moves[new_pos] != :slide
     @board.add_piece(nil, @pos)
     @board.add_piece(self, new_pos)
     @pos = new_pos
@@ -99,10 +101,11 @@ class Piece
 
   def perform_jump(new_pos)
     moves = generate_valid_moves
-    return false if !moves.keys.include?(new_pos)
+    return false if moves[new_pos] != :jump
     @board.add_piece(nil, @pos)
     @board.add_piece(self, new_pos)
-    enemy_pos = [@pos[0] + ((new_pos[0]-@pos[0])/2), @pos[1] + ((new_pos[1]-@pos[1])/2)]
+    p moves
+    enemy_pos = [(@pos[0] + ((new_pos[0]-@pos[0])/2)), (@pos[1] + ((new_pos[1]-@pos[1])/2))]
     @board.add_piece(nil, enemy_pos)
     @pos = new_pos
     maybe_king

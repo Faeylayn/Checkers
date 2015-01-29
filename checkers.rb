@@ -17,33 +17,34 @@ attr_accessor :rows
     setup_pieces if @start
   end
 
+  # def setup_pieces
+  #   #test
+  #   Piece.new(self, [3,3], :red)
+  #   Piece.new(self, [4,4], :black)
+  #   Piece.new(self, [1,3], :red)
+  # end
+
+
   def setup_pieces
-    #test
-    Piece.new(self, [3,3], :red)
-    Piece.new(self, [4,4], :black)
+
+
+    (0..2).each do |idx|
+
+      setup_row(@rows[idx], (idx % 2), :red, idx)
+
+      setup_row(@rows[((@rows.count - 1) - idx)], ((idx+1) % 2), :black, (@rows.count-1 -idx))
+    end
+
+
   end
 
-
-  # def setup_pieces
-  #
-  #
-  #   (0..2).each do |idx|
-  #
-  #     setup_row(@rows[idx], (idx % 2), :red, idx)
-  #
-  #     setup_row(@rows[((@rows.count - 1) - idx)], ((idx+1) % 2), :black, (@rows.count-1 -idx))
-  #   end
-  #
-  #
-  # end
-  #
-  # def setup_row(row, mod, color, index)
-  #   row.each_with_index do |space, idx|
-  #     if mod == idx % 2
-  #       Piece.new(self, [index, idx], color)
-  #     end
-  #   end
-  # end
+  def setup_row(row, mod, color, index)
+    row.each_with_index do |space, idx|
+      if mod == idx % 2
+        Piece.new(self, [index, idx], color)
+      end
+    end
+  end
 
 
   def add_piece(piece, position)
@@ -78,7 +79,7 @@ attr_accessor :rows
     new_board = Board.new(false)
 
     pieces.each do |piece|
-      Piece.new(new_board, piece.pos, piece.color, piece.king)
+      Piece.new(new_board, piece.pos.dup, piece.color, piece.king)
     end
 
     new_board
@@ -121,9 +122,11 @@ class Game
       @current_color = (@current_color == :red) ? :black : :red
 
       if lose_check
-        @game_on == false
-        puts "YOU LOSE! YOU GET NOTHING! GOOD DAY SIR!"
+        @game_on = false
         @board.display
+        puts "#{@current_color} is out of pieces!"
+        puts "YOU LOSE! YOU GET NOTHING! GOOD DAY SIR!"
+
       end
 
     end
@@ -147,11 +150,12 @@ class Game
 
     move_input = gets.chomp.split(',')
     move_input.each do |move|
-      move = move.split('')
+      move = move.strip.split('')
       move[0] = move[0].to_i
       move[1] = move[1].to_i
       move_sequence << move
     end
+
 
     moving_piece.perform_moves(move_sequence)
 
