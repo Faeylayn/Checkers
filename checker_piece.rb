@@ -103,7 +103,6 @@ class Piece
     return false if moves[new_pos] != :jump
     @board.add_piece(nil, @pos)
     @board.add_piece(self, new_pos)
-    p moves
     enemy_pos = [(@pos[0] + ((new_pos[0]-@pos[0])/2)), (@pos[1] + ((new_pos[1]-@pos[1])/2))]
     @board.add_piece(nil, enemy_pos)
     @pos = new_pos

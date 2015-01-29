@@ -8,13 +8,31 @@ class ComputerPlayer
 
   def comp_turn
 
-    move = find_move
+    piece, move = random_move
+    #move = find_move
 
 
   end
 
+  def random_move
+    move_hash = Hash.new { |h, k| h[k] = [] }
+    pieces = @board.pieces.select{|piece| piece.color == @color}
+
+    pieces.each do |piece|
+      moves = piece.generate_valid_moves
+      moves.keys.each do |move|
+        move_hash[piece] << move
+      end
+    end
+    piece_choice = move_hash.keys.sample
+    move_pos = move_hash[piece_choice].sample
+
+    return piece_choice, move_pos
+
+  end
 
   def find_move
+
     test_board = @board.dup
     pieces = test_board.pieces.select{|piece| piece.color == @color}
 
@@ -51,6 +69,8 @@ class ComputerPlayer
       pos_in_danger = [(dy[0] + ((dx[0]-dy[0])/2)), (dy[1] + ((dx[1]-dy[1])/2))]
       test_moves(pos_in_danger)
 
+    end
+
     pieces = test_board.pieces.select{|piece| piece.color == @color}
 
 
@@ -80,11 +100,11 @@ class ComputerPlayer
 
 end
 
-
-ai_behavior
-
-take piece if possible
-move piece to safety if possible (priority king)
-get king
-prevent opponent king
-move small towards
+#
+# ai_behavior
+#
+# take piece if possible
+# move piece to safety if possible (priority king)
+# get king
+# prevent opponent king
+# move small towards

@@ -80,11 +80,14 @@ end
 
 
 class Game
-  def initialize
+  def initialize(comp=false)
 
     @board = Board.new
     @current_color = :red
     @game_on = true
+    @turn = 1
+    @comp = comp
+    @CompPlayer = ComputerPlayer.new(@board, :black) if @comp
     #play
   end
 
@@ -94,23 +97,35 @@ class Game
 
     while @game_on
 
-      @board.display
-      puts "It is #{@current_color}'s turn"
-      begin
-        user_turn
-      rescue ColorError
-        puts "That is not a valid piece to move"
-        retry
-      rescue InvalidMoveError
-        puts "That is not a Valid Move or Move sequence!"
-        retry
-      rescue ArgumentError
-        puts "Invalid Input"
-        retry
-      rescue TypeError
-        puts "Invalid Input"
-        retry
+      if @comp && @turn == 2
+        puts "Computer is choosing move."
+
+        piece, move = @CompPlayer.comp_turn
+
+        piece.perform_moves([move])
+
+
+      else
+        @board.display
+        puts "It is #{@current_color}'s turn"
+        begin
+          user_turn
+        rescue ColorError
+          puts "That is not a valid piece to move"
+          retry
+        rescue InvalidMoveError
+          puts "That is not a Valid Move or Move sequence!"
+          retry
+        rescue ArgumentError
+          puts "Invalid Input"
+          retry
+        rescue TypeError
+          puts "Invalid Input"
+          retry
+        end
       end
+
+      @turn = (@turn == 1) ? 2 : 1
 
       @current_color = (@current_color == :red) ? :black : :red
 
