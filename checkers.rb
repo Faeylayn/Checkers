@@ -111,7 +111,9 @@ class Game
         retry
       end
 
-      moving_piece.perform_moves(move_sequence)
+      @current_color = (@current_color == :red) ? :black : :red
+
+      if 
 
 
     end
@@ -134,7 +136,13 @@ class Game
 
     move_input = gets.chomp.split(',')
     move_input.each do |move|
+      move = move.split.compress
+      move[0] = move[0].to_i
+      move[1] = move[1].to_i
+      move_sequence << move
+    end
 
+    moving_piece.perform_moves(move_sequence)
 
   end
 
