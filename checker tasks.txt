@@ -1,0 +1,12 @@
+bonus Tasks on checkers
+
+stalemate check
+
+force to take enemy check
+
+computer player vs human player
+
+clean user input?
+
+unicode?
+other display options?

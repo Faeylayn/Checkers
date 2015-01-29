@@ -22,6 +22,7 @@ attr_accessor :rows
   #   Piece.new(self, [3,3], :red)
   #   Piece.new(self, [4,4], :black)
   #   Piece.new(self, [1,3], :red)
+  #   Piece.new(self, [0,7], :red)
   # end
 
   def setup_pieces
@@ -103,11 +104,17 @@ class Game
       rescue InvalidMoveError
         puts "That is not a Valid Move or Move sequence!"
         retry
+      rescue ArgumentError
+        puts "Invalid Input"
+        retry
+      rescue TypeError
+        puts "Invalid Input"
+        retry
       end
 
       @current_color = (@current_color == :red) ? :black : :red
 
-      if lose_check
+      unless lose_check
         @game_on = false
         @board.display
         puts "#{@current_color} is out of pieces!"
@@ -133,8 +140,8 @@ class Game
 
   def get_moving_piece
     input = gets.chomp.split('')
-    input[0] = input[0].to_i
-    input[1] = input[1].to_i
+    input[0] = Integer(input[0])
+    input[1] = Integer(input[1])
     moving_piece = @board.rows[input[0]][input[1]]
 
     raise ColorError if moving_piece == nil
@@ -148,18 +155,15 @@ class Game
     move_input = gets.chomp.split(',')
     move_input.each do |move|
       move = move.strip.split('')
-      move[0] = move[0].to_i
-      move[1] = move[1].to_i
+      move[0] = Integer(move[0])
+      move[1] = Integer(move[1])
       move_sequence << move
     end
     move_sequence
   end
 
   def lose_check
-    @board.pieces.each do |piece|
-      return false if piece.color == @current_color
-    end
-    true
+    @board.pieces.any? {|piece| piece.color == @current_color}
   end
 
 end
