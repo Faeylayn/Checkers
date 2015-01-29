@@ -44,16 +44,21 @@ attr_accessor :rows
   end
 
   def display
+    puts '  _______________________________________'
+    nums = (0..7).to_a
     @rows.reverse.each do |row|
+      print "#{nums.pop}"
       row.each do |space|
         print " | "
         print space.symbol if space != nil
-        print ' ' if space == nil
+        print '  ' if space == nil
       end
       print " | "
       puts
-      puts '  _______________________________'
+      puts '   _______________________________________'
     end
+
+    puts '    0    1    2    3    4    5    6    7  '
     nil
   end
 
@@ -72,8 +77,65 @@ attr_accessor :rows
     new_board
   end
 
-  
 
 
+end
+
+
+class Game
+  def initialize
+
+    @board = Board.new
+
+    @game_on = true
+    play
+  end
+
+
+  def play
+    puts "Welcome to Checkers!"
+    @current_color = :red
+    while @game_on
+
+      @board.display
+      puts "It is #{@current_color}'s turn"
+
+      begin
+        moving_piece, move_sequence = get_user_input
+      rescue ColorError
+        puts "That is not a valid piece to move"
+        retry
+
+      rescue InvalidMoveError
+        puts "That is not a Valid Move or Move sequence!"
+        retry
+      end
+
+      moving_piece.perform_moves(move_sequence)
+
+
+    end
+  end
+
+  def get_user_input
+    puts "Which piece would you like to move? i.e. 0 0"
+    input = gets.chomp.split('').compress
+    input[0] = input[0].to_i
+    input[1] = input[1].to_i
+    moving_piece = @board.rows[input[0]][input[1]]
+    raise ColorError if moving_piece == nil
+    raise ColorError if moving_piece.color != @current_color
+
+    puts "Where would you like to move to?"
+    puts "If there are multiple jumps, please separate them by commas."
+    puts "i.e. 2 4, 4 2, 6 4"
+
+    move_sequence = []
+
+    move_input = gets.chomp.split(',')
+    move_input.each do |move|
+
+
+  end
 
 end
