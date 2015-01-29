@@ -1,5 +1,6 @@
 require_relative 'checker_piece'
 require_relative 'checker_player'
+require 'colorize'
 
 class ObstacleError < StandardError
 end
@@ -51,7 +52,7 @@ attr_accessor :rows
       print "#{nums.pop}"
       row.each do |space|
         print " | "
-        print space.symbol if space != nil
+        print "#{space.symbol}".colorize(space.color) if space != nil
         print '  ' if space == nil
       end
       print " | "
@@ -106,9 +107,11 @@ class Game
 
 
       else
+        system 'clear'
         @board.display
         puts "It is #{@current_color}'s turn"
         begin
+          puts '_______________________________________'
           user_turn
         rescue ColorError
           puts "That is not a valid piece to move"
