@@ -18,25 +18,32 @@ attr_accessor :rows
   end
 
   def setup_pieces
-
-
-    (0..2).each do |idx|
-
-      setup_row(@rows[idx], (idx % 2), :red, idx)
-
-      setup_row(@rows[((@rows.count - 1) - idx)], ((idx+1) % 2), :black, (@rows.count-1 -idx))
-    end
-
-
+    #test
+    Piece.new(self, [3,3], :red)
+    Piece.new(self, [4,4], :black)
   end
 
-  def setup_row(row, mod, color, index)
-    row.each_with_index do |space, idx|
-      if mod == idx % 2
-        Piece.new(self, [index, idx], color)
-      end
-    end
-  end
+
+  # def setup_pieces
+  #
+  #
+  #   (0..2).each do |idx|
+  #
+  #     setup_row(@rows[idx], (idx % 2), :red, idx)
+  #
+  #     setup_row(@rows[((@rows.count - 1) - idx)], ((idx+1) % 2), :black, (@rows.count-1 -idx))
+  #   end
+  #
+  #
+  # end
+  #
+  # def setup_row(row, mod, color, index)
+  #   row.each_with_index do |space, idx|
+  #     if mod == idx % 2
+  #       Piece.new(self, [index, idx], color)
+  #     end
+  #   end
+  # end
 
 
   def add_piece(piece, position)
@@ -86,7 +93,7 @@ class Game
   def initialize
 
     @board = Board.new
-    @current_color = :red
+    @current_color = :black
     @game_on = true
     #play
   end
@@ -113,8 +120,11 @@ class Game
 
       @current_color = (@current_color == :red) ? :black : :red
 
-
-
+      if lose_check
+        @game_on == false
+        puts "YOU LOSE! YOU GET NOTHING! GOOD DAY SIR!"
+        @board.display
+      end
 
     end
   end
@@ -125,8 +135,7 @@ class Game
     input[0] = input[0].to_i
     input[1] = input[1].to_i
     moving_piece = @board.rows[input[0]][input[1]]
-    print moving_piece.color
-    print @current_color
+
     raise ColorError if moving_piece == nil
     raise ColorError if moving_piece.color != @current_color
 
@@ -143,11 +152,17 @@ class Game
       move[1] = move[1].to_i
       move_sequence << move
     end
-    puts moving_piece.symbol
-    puts "#{move_sequence}"
+
     moving_piece.perform_moves(move_sequence)
 
 
+  end
+
+  def lose_check
+    @board.pieces.each do |piece|
+      return false if piece.color == @current_color
+    end
+    true
   end
 
 end

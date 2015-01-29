@@ -94,13 +94,11 @@ class Piece
     @board.add_piece(self, new_pos)
     @pos = new_pos
     maybe_king
-    puts "HERE"
     return true
   end
 
   def perform_jump(new_pos)
     moves = generate_valid_moves
-    puts 'HERE'
     return false if !moves.keys.include?(new_pos)
     @board.add_piece(nil, @pos)
     @board.add_piece(self, new_pos)
