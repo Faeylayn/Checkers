@@ -11,7 +11,7 @@ end
 
 class Piece
 
-  attr_accessor :position, :color, :symbol, :king
+  attr_accessor :pos, :color, :symbol, :king
 
   SLIDES = [
     [1,  1],
@@ -94,11 +94,13 @@ class Piece
     @board.add_piece(self, new_pos)
     @pos = new_pos
     maybe_king
-    true
+    puts "HERE"
+    return true
   end
 
   def perform_jump(new_pos)
     moves = generate_valid_moves
+    puts 'HERE'
     return false if !moves.keys.include?(new_pos)
     @board.add_piece(nil, @pos)
     @board.add_piece(self, new_pos)
@@ -106,13 +108,17 @@ class Piece
     @board.add_piece(nil, enemy_pos)
     @pos = new_pos
     maybe_king
-    true
+    return true
   end
 
   def perform_moves!(sequence)
     if sequence.count == 1
-      perform_slide(sequence[0]) if !perform_jump(sequence[0])
-
+      check = perform_slide(sequence[0])
+      if !check
+        return perform_jump(sequence[0])
+      else
+        return check
+      end
     else
       return multi_jump(sequence)
     end
@@ -132,7 +138,7 @@ class Piece
     @king = true if @pos[0] == last_row
     @symbol = king_symbol if @pos[0] == last_row
 
-    nil
+
   end
 
   def valid_move_sequence?(sequence)

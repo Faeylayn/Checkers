@@ -86,15 +86,15 @@ class Game
   def initialize
 
     @board = Board.new
-
+    @current_color = :red
     @game_on = true
-    play
+    #play
   end
 
 
   def play
     puts "Welcome to Checkers!"
-    @current_color = :red
+
     while @game_on
 
       @board.display
@@ -113,36 +113,40 @@ class Game
 
       @current_color = (@current_color == :red) ? :black : :red
 
-      if 
+
 
 
     end
   end
 
   def get_user_input
-    puts "Which piece would you like to move? i.e. 0 0"
-    input = gets.chomp.split('').compress
+    puts "Which piece would you like to move? i.e. 00"
+    input = gets.chomp.split('')
     input[0] = input[0].to_i
     input[1] = input[1].to_i
     moving_piece = @board.rows[input[0]][input[1]]
+    print moving_piece.color
+    print @current_color
     raise ColorError if moving_piece == nil
     raise ColorError if moving_piece.color != @current_color
 
     puts "Where would you like to move to?"
     puts "If there are multiple jumps, please separate them by commas."
-    puts "i.e. 2 4, 4 2, 6 4"
+    puts "i.e. 24, 42, 64"
 
     move_sequence = []
 
     move_input = gets.chomp.split(',')
     move_input.each do |move|
-      move = move.split.compress
+      move = move.split('')
       move[0] = move[0].to_i
       move[1] = move[1].to_i
       move_sequence << move
     end
-
+    puts moving_piece.symbol
+    puts "#{move_sequence}"
     moving_piece.perform_moves(move_sequence)
+
 
   end
 
