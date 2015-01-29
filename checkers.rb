@@ -24,18 +24,11 @@ attr_accessor :rows
   #   Piece.new(self, [1,3], :red)
   # end
 
-
   def setup_pieces
-
-
     (0..2).each do |idx|
-
       setup_row(@rows[idx], (idx % 2), :red, idx)
-
       setup_row(@rows[((@rows.count - 1) - idx)], ((idx+1) % 2), :black, (@rows.count-1 -idx))
     end
-
-
   end
 
   def setup_row(row, mod, color, index)
@@ -45,7 +38,6 @@ attr_accessor :rows
       end
     end
   end
-
 
   def add_piece(piece, position)
     @rows[position[0]][position[1]] = piece
@@ -75,17 +67,13 @@ attr_accessor :rows
   end
 
   def dup_board
-
     new_board = Board.new(false)
-
     pieces.each do |piece|
       Piece.new(new_board, piece.pos.dup, piece.color, piece.king)
     end
 
     new_board
   end
-
-
 
 end
 
@@ -107,13 +95,11 @@ class Game
 
       @board.display
       puts "It is #{@current_color}'s turn"
-
       begin
-        moving_piece, move_sequence = get_user_input
+        user_turn
       rescue ColorError
         puts "That is not a valid piece to move"
         retry
-
       rescue InvalidMoveError
         puts "That is not a Valid Move or Move sequence!"
         retry
@@ -126,14 +112,26 @@ class Game
         @board.display
         puts "#{@current_color} is out of pieces!"
         puts "YOU LOSE! YOU GET NOTHING! GOOD DAY SIR!"
-
       end
 
     end
   end
 
-  def get_user_input
+  def user_turn
     puts "Which piece would you like to move? i.e. 00"
+
+    moving_piece = get_moving_piece
+
+    puts "Where would you like to move to?"
+    puts "If there are multiple jumps, please separate them by commas."
+    puts "i.e. 24, 42, 64"
+
+    move_sequence = get_move_sequence
+    moving_piece.perform_moves(move_sequence)
+
+  end
+
+  def get_moving_piece
     input = gets.chomp.split('')
     input[0] = input[0].to_i
     input[1] = input[1].to_i
@@ -142,12 +140,11 @@ class Game
     raise ColorError if moving_piece == nil
     raise ColorError if moving_piece.color != @current_color
 
-    puts "Where would you like to move to?"
-    puts "If there are multiple jumps, please separate them by commas."
-    puts "i.e. 24, 42, 64"
+    moving_piece
+  end
 
+  def get_move_sequence
     move_sequence = []
-
     move_input = gets.chomp.split(',')
     move_input.each do |move|
       move = move.strip.split('')
@@ -155,11 +152,7 @@ class Game
       move[1] = move[1].to_i
       move_sequence << move
     end
-
-
-    moving_piece.perform_moves(move_sequence)
-
-
+    move_sequence
   end
 
   def lose_check

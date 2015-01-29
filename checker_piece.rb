@@ -7,8 +7,6 @@ end
 class InvalidMoveError < CheckerError
 end
 
-
-
 class Piece
 
   attr_accessor :pos, :color, :symbol, :king
@@ -50,7 +48,6 @@ class Piece
 
   def generate_valid_moves
     move_set = {}
-
     SLIDES.each_with_index do |(dx, dy), idx|
       dx = -dx if @color == :black
       test_pos = [@pos[0] + dx, @pos[1] + dy]
@@ -138,20 +135,15 @@ class Piece
 
     @king = true if @pos[0] == last_row
     @symbol = king_symbol if @pos[0] == last_row
-
-
   end
 
   def valid_move_sequence?(sequence)
-
     test_board = @board.dup_board
     test_piece = test_board.rows[@pos[0]][@pos[1]]
-
     return test_piece.perform_moves!(sequence)
   end
 
   def perform_moves(sequence)
-
     if valid_move_sequence?(sequence)
       perform_moves!(sequence)
     else
