@@ -1,4 +1,5 @@
 require_relative 'checker_piece'
+require_relative 'checker_player'
 
 class ObstacleError < StandardError
 end
@@ -12,9 +13,8 @@ class Board
 attr_accessor :rows
 
   def initialize(start = true)
-    @start = start
     @rows = Array.new(8) {Array.new(8)}
-    setup_pieces if @start
+    setup_pieces if start
   end
 
   # def setup_pieces
@@ -83,7 +83,7 @@ class Game
   def initialize
 
     @board = Board.new
-    @current_color = :black
+    @current_color = :red
     @game_on = true
     #play
   end

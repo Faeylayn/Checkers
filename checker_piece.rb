@@ -1,4 +1,4 @@
-#
+# -*- coding: utf-8 -*-
 require 'byebug'
 
 class CheckerError < StandardError
@@ -39,6 +39,7 @@ class Piece
     @board.add_piece(self, @pos)
     @symbol = (@color == :red) ? 'R ' : "B "
   end
+
 
   def valid_pos?(position)
      position.all? {|coord| coord.between?(0,7)} && @board.rows[position[0]][position[1]] == nil
